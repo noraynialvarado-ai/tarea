@@ -16,6 +16,10 @@
     <li><a href="#productos">Catálogo</a></li>
     <li><a href="#contacto">Contacto</a></li>
   </ul>
+  <button id="cart-open-btn" class="cart-button" aria-label="Abrir carrito">
+    <span class="cart-icon">🛒</span>
+    <span class="nav-cart-count">0</span>
+  </button>
 </nav>
 
 <section id="hero">
@@ -84,20 +88,15 @@
   <h2 class="section-title">LOS 9 EQUIPOS IMPORTADOS</h2>
   <div class="divider"></div>
 
-  <div class="cart-panel">
-    <div class="cart-summary">Productos seleccionados: <span class="cart-count">0</span></div>
-    <button class="btn-primary" id="compare-btn" disabled>Comparar seleccionados</button>
+  <div class="cart-panel" id="cart-panel">
+    <div class="cart-summary">
+      <div>Productos en carrito: <span class="cart-count">0</span></div>
+      <div>Subtotal: <span class="cart-subtotal">$0.00</span></div>
+    </div>
+    <button class="btn-primary" id="checkout-btn" disabled>Comprar ahora</button>
   </div>
 
-  <div class="compare-panel" id="compare-panel" hidden>
-    <div class="compare-panel-header">
-      <div>
-        <h3>Comparativa de productos</h3>
-        <p class="compare-note">Selecciona al menos 2 productos para comparar.</p>
-      </div>
-    </div>
-    <div class="compare-grid"></div>
-  </div>
+  <div class="cart-message" id="cart-message" hidden>La compra se hizo con éxito.</div>
 
   <div class="products-grid">
 
@@ -366,57 +365,78 @@
 
 <script>
   const productsSection = document.getElementById('productos');
-  const compareBtn = document.getElementById('compare-btn');
+  const navCartCount = document.querySelector('.nav-cart-count');
   const cartCount = document.querySelector('.cart-count');
-  const comparePanel = document.getElementById('compare-panel');
-  const compareGrid = comparePanel.querySelector('.compare-grid');
+  const cartSubtotal = document.querySelector('.cart-subtotal');
+  const checkoutBtn = document.getElementById('checkout-btn');
+  const cartMessage = document.getElementById('cart-message');
+  const cartOpenBtn = document.getElementById('cart-open-btn');
+  const cartPanel = document.getElementById('cart-panel');
 
-  const productCards = Array.from(productsSection.querySelectorAll('.product-card'));
-
-  function formatProduct(card) {
+  const products = Array.from(productsSection.querySelectorAll('.product-card')).map((card, index) => {
     const title = card.querySelector('h3')?.textContent.trim() || '';
-    const price = card.querySelector('.price-val')?.textContent.trim() || '';
+    const priceText = card.querySelector('.price-val')?.textContent.trim().replace(/[$,]/g, '') || '0';
+    const price = parseFloat(priceText) || 0;
     const description = card.querySelector('.product-body > p')?.textContent.trim() || '';
-    return { card, title, price, description };
-  }
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'btn-outline add-cart-btn';
+    button.textContent = 'Agregar al carrito';
+    button.dataset.productIndex = index;
+    card.querySelector('.product-body').appendChild(button);
 
-  function updateCart() {
-    const selected = Array.from(productsSection.querySelectorAll('.product-checkbox:checked'));
-    cartCount.textContent = selected.length;
-    compareBtn.disabled = selected.length < 2;
-    if (selected.length === 0) {
-      comparePanel.hidden = true;
-    }
-  }
-
-  function renderCompare(selectedCards) {
-    comparePanel.hidden = false;
-    compareGrid.innerHTML = selectedCards.map(({ title, price, description }) => `
-      <div class="compare-card">
-        <h4>${title}</h4>
-        <p>${description}</p>
-        <div class="compare-price">Precio: ${price}</div>
-      </div>
-    `).join('');
-  }
-
-  productCards.forEach((card, index) => {
-    const label = document.createElement('label');
-    label.className = 'product-select';
-    label.innerHTML = `
-      <input type="checkbox" class="product-checkbox" data-product-index="${index}" />
-      Seleccionar
-    `;
-    card.querySelector('.product-body').appendChild(label);
-    label.querySelector('.product-checkbox').addEventListener('change', updateCart);
+    return { card, title, price, description, button, inCart: false };
   });
 
-  compareBtn.addEventListener('click', () => {
-    const selectedCheckboxes = Array.from(productsSection.querySelectorAll('.product-checkbox:checked'));
-    const selected = selectedCheckboxes.map(cb => formatProduct(cb.closest('.product-card')));
-    renderCompare(selected);
-    comparePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const cartItems = [];
+
+  function formatMoney(value) {
+    return '$' + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+  }
+
+  function updateCartDisplay() {
+    cartCount.textContent = cartItems.length;
+    navCartCount.textContent = cartItems.length;
+    const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
+    cartSubtotal.textContent = formatMoney(subtotal);
+    checkoutBtn.disabled = cartItems.length === 0;
+    cartPanel.classList.toggle('cart-empty', cartItems.length === 0);
+    cartMessage.hidden = true;
+  }
+
+  function addToCart(product) {
+    if (product.inCart) return;
+    product.inCart = true;
+    cartItems.push(product);
+    product.button.textContent = 'En el carrito';
+    product.button.disabled = true;
+    product.button.classList.add('btn-disabled');
+    updateCartDisplay();
+  }
+
+  products.forEach((product) => {
+    product.button.addEventListener('click', () => addToCart(product));
   });
+
+  checkoutBtn.addEventListener('click', () => {
+    if (cartItems.length === 0) return;
+    cartMessage.hidden = false;
+    cartMessage.textContent = 'La compra se hizo con éxito.';
+    cartItems.length = 0;
+    products.forEach((product) => {
+      product.inCart = false;
+      product.button.textContent = 'Agregar al carrito';
+      product.button.disabled = false;
+      product.button.classList.remove('btn-disabled');
+    });
+    updateCartDisplay();
+  });
+
+  cartOpenBtn.addEventListener('click', () => {
+    cartPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  updateCartDisplay();
 </script>
 
 </body>
