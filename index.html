@@ -91,9 +91,15 @@
   <div class="cart-panel" id="cart-panel">
     <div class="cart-summary">
       <div>Productos en carrito: <span class="cart-count">0</span></div>
-      <div>Subtotal: <span class="cart-subtotal">$0.00</span></div>
+      <div>Total: <span class="cart-subtotal">$0.00</span></div>
     </div>
     <button class="btn-primary" id="checkout-btn" disabled>Comprar ahora</button>
+  </div>
+
+  <div class="cart-items-panel" id="cart-items-panel" hidden>
+    <div class="cart-items-header">Productos en carrito</div>
+    <div class="cart-items-list"></div>
+    <div class="cart-items-total">Total: <span class="cart-total-value">$0.00</span></div>
   </div>
 
   <div class="cart-message" id="cart-message" hidden>La compra se hizo con éxito.</div>
@@ -378,14 +384,32 @@
     const priceText = card.querySelector('.price-val')?.textContent.trim().replace(/[$,]/g, '') || '0';
     const price = parseFloat(priceText) || 0;
     const description = card.querySelector('.product-body > p')?.textContent.trim() || '';
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'btn-outline add-cart-btn';
-    button.textContent = 'Agregar al carrito';
-    button.dataset.productIndex = index;
-    card.querySelector('.product-body').appendChild(button);
+    const actionRow = document.createElement('div');
+    actionRow.className = 'product-action';
 
-    return { card, title, price, description, button, inCart: false };
+    const buttonAdd = document.createElement('button');
+    buttonAdd.type = 'button';
+    buttonAdd.className = 'btn-outline add-cart-btn';
+    buttonAdd.textContent = 'Agregar al carrito';
+    buttonAdd.dataset.productIndex = index;
+
+    const buttonBuy = document.createElement('button');
+    buttonBuy.type = 'button';
+    buttonBuy.className = 'btn-outline btn-buy';
+    buttonBuy.textContent = 'Comprar';
+    buttonBuy.dataset.productIndex = index;
+
+    actionRow.appendChild(buttonAdd);
+    actionRow.appendChild(buttonBuy);
+    card.querySelector('.product-body').appendChild(actionRow);
+
+    buttonBuy.addEventListener('click', () => {
+      alert('El producto fue comprado.');
+      cartMessage.hidden = false;
+      cartMessage.textContent = `La compra de "${title}" se hizo con éxito.`;
+    });
+
+    return { card, title, price, description, buttonAdd, buttonBuy, inCart: false };
   });
 
   const cartItems = [];
@@ -394,28 +418,67 @@
     return '$' + value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
   }
 
+  const cartItemsList = document.querySelector('.cart-items-list');
+  const cartTotalValue = document.querySelector('.cart-total-value');
+
+  function renderCartItems() {
+    cartItemsList.innerHTML = '';
+    if (cartItems.length === 0) {
+      cartItemsList.innerHTML = '<p class="cart-empty-text">Aún no hay productos en el carrito.</p>';
+      document.getElementById('cart-items-panel').hidden = true;
+      return;
+    }
+    document.getElementById('cart-items-panel').hidden = false;
+    cartItems.forEach((item, index) => {
+      const itemRow = document.createElement('div');
+      itemRow.className = 'cart-item';
+      itemRow.innerHTML = `
+        <div>
+          <div class="cart-item-title">${item.title}</div>
+          <div class="cart-item-price">${formatMoney(item.price)}</div>
+        </div>
+        <button type="button" class="cart-remove-btn" data-remove-index="${index}">Quitar</button>
+      `;
+      itemRow.querySelector('.cart-remove-btn').addEventListener('click', () => removeFromCart(index));
+      cartItemsList.appendChild(itemRow);
+    });
+  }
+
   function updateCartDisplay() {
     cartCount.textContent = cartItems.length;
     navCartCount.textContent = cartItems.length;
     const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
     cartSubtotal.textContent = formatMoney(subtotal);
+    cartTotalValue.textContent = formatMoney(subtotal);
     checkoutBtn.disabled = cartItems.length === 0;
     cartPanel.classList.toggle('cart-empty', cartItems.length === 0);
     cartMessage.hidden = true;
+    renderCartItems();
   }
 
   function addToCart(product) {
     if (product.inCart) return;
     product.inCart = true;
     cartItems.push(product);
-    product.button.textContent = 'En el carrito';
-    product.button.disabled = true;
-    product.button.classList.add('btn-disabled');
+    product.buttonAdd.textContent = 'En el carrito';
+    product.buttonAdd.disabled = true;
+    product.buttonAdd.classList.add('btn-disabled');
+    updateCartDisplay();
+  }
+
+  function removeFromCart(index) {
+    const removed = cartItems.splice(index, 1)[0];
+    if (removed) {
+      removed.inCart = false;
+      removed.buttonAdd.textContent = 'Agregar al carrito';
+      removed.buttonAdd.disabled = false;
+      removed.buttonAdd.classList.remove('btn-disabled');
+    }
     updateCartDisplay();
   }
 
   products.forEach((product) => {
-    product.button.addEventListener('click', () => addToCart(product));
+    product.buttonAdd.addEventListener('click', () => addToCart(product));
   });
 
   checkoutBtn.addEventListener('click', () => {
@@ -425,9 +488,9 @@
     cartItems.length = 0;
     products.forEach((product) => {
       product.inCart = false;
-      product.button.textContent = 'Agregar al carrito';
-      product.button.disabled = false;
-      product.button.classList.remove('btn-disabled');
+      product.buttonAdd.textContent = 'Agregar al carrito';
+      product.buttonAdd.disabled = false;
+      product.buttonAdd.classList.remove('btn-disabled');
     });
     updateCartDisplay();
   });

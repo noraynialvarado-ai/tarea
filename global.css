@@ -96,17 +96,29 @@
     .product-select { display:flex; align-items:center; gap:.7rem; margin-top:1rem; color:var(--gray); font-size:.92rem; }
     .product-select input { width:1rem; height:1rem; accent-color:var(--gold); cursor:pointer; }
     .cart-panel { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:1.3rem 1.4rem; margin-top:2rem; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.03); flex-wrap:wrap; }
-    .cart-summary { display:flex; gap:1.4rem; font-size:.95rem; color:var(--white); }
-    .cart-count { font-family:'Bebas Neue',sans-serif; color:var(--gold); margin-left:.5rem; }
+    .cart-summary { display:flex; gap:1.4rem; font-size:.95rem; color:var(--white); flex-wrap:wrap; }
+    .cart-count { font-family:'Bebas Neue',sans-serif; color:var(--gold); }
     .cart-subtotal { font-family:'Bebas Neue',sans-serif; color:var(--white); }
     .cart-message { margin-top:1rem; padding:1rem 1.2rem; border:1px solid rgba(255,255,255,.1); background:rgba(26,120,194,.12); color:var(--white); font-size:.95rem; }
     .btn-disabled { opacity:.65; cursor:not-allowed; }
-    .cart-button { display:flex; align-items:center; gap:.5rem; background:transparent; border:1px solid rgba(255,255,255,.18); color:var(--white); padding:.7rem 1rem; border-radius:999px; font-family:'Barlow Condensed',sans-serif; letter-spacing:1px; cursor:pointer; transition:background .25s,border-color .25s,transform .2s; }
-    .cart-button:hover { background:rgba(255,255,255,.06); border-color:var(--gold); transform:translateY(-1px); }
-    .cart-icon { font-size:1rem; }
+    .cart-button { display:flex; align-items:center; gap:.5rem; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.18); color:var(--white); padding:.7rem 1rem; border-radius:999px; font-family:'Barlow Condensed',sans-serif; letter-spacing:1px; cursor:pointer; transition:background .25s,border-color .25s,transform .2s; }
+    .cart-button:hover { background:rgba(212,168,67,.14); border-color:var(--gold); transform:translateY(-1px); }
+    .cart-icon { font-size:1.1rem; }
     .nav-cart-count { font-family:'Bebas Neue',sans-serif; font-size:1rem; color:var(--gold); }
-    .product-action { width:100%; margin-top:1.1rem; }
-    .product-action .btn-outline { width:100%; padding:.85rem 1rem; text-align:center; }
+    .product-action { display:flex; gap:1rem; flex-wrap:wrap; margin-top:1.3rem; }
+    .btn-buy { background:var(--gold); color:var(--black); border:none; }
+    .btn-buy:hover { background:var(--gold-lt); }
+    .product-action .btn-outline { width:auto; padding:.85rem 1rem; text-align:center; }
+    .cart-items-panel { margin-top:1rem; padding:1.3rem 1.4rem; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.04); }
+    .cart-items-header { font-family:'Bebas Neue',sans-serif; font-size:1.1rem; color:var(--white); margin-bottom:1rem; }
+    .cart-items-list { display:flex; flex-direction:column; gap:.75rem; }
+    .cart-item { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:.9rem 1rem; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02); border-radius:.8rem; }
+    .cart-item-title { font-weight:700; color:var(--white); }
+    .cart-item-price { color:var(--gold-lt); font-weight:700; }
+    .cart-remove-btn { min-width:90px; border:none; background:rgba(255,255,255,.08); color:var(--white); padding:.55rem .85rem; border-radius:.75rem; cursor:pointer; transition:background .25s; }
+    .cart-remove-btn:hover { background:rgba(212,168,67,.18); }
+    .cart-items-total { margin-top:1rem; text-align:right; font-weight:700; color:var(--white); }
+    .cart-empty-text { color:var(--gray); }
     #productos { background:var(--deep); }
     .prov-box { background:rgba(26,120,194,.08); border:1px solid rgba(59,163,245,.2); padding:1.3rem 1.7rem; margin-bottom:2rem; display:flex; gap:2rem; align-items:center; flex-wrap:wrap; }
     .prov-box strong { font-family:'Barlow Condensed',sans-serif; font-size:.74rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--blue-lt); display:block; margin-bottom:.25rem; }
