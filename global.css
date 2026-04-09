@@ -93,6 +93,20 @@
     .price-val.fob { color:var(--blue-lt); }
     .price-val.cif { color:var(--gold-lt); }
     .price-val.venta { color:#6eff8a; }
+    .product-select { display:flex; align-items:center; gap:.7rem; margin-top:1rem; color:var(--gray); font-size:.92rem; }
+    .product-select input { width:1rem; height:1rem; accent-color:var(--gold); cursor:pointer; }
+    .cart-panel { display:flex; justify-content:space-between; align-items:center; gap:1rem; padding:1.3rem 1.4rem; margin-top:2rem; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.03); }
+    .cart-summary { font-size:.95rem; color:var(--white); }
+    .cart-count { font-family:'Bebas Neue',sans-serif; color:var(--gold); margin-left:.5rem; }
+    .compare-panel { margin-top:1.8rem; padding:1.4rem; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.03); }
+    .compare-panel-header { display:flex; justify-content:space-between; align-items:flex-start; gap:1rem; flex-wrap:wrap; }
+    .compare-panel h3 { font-family:'Bebas Neue',sans-serif; font-size:1.4rem; color:var(--white); margin-bottom:.35rem; }
+    .compare-note { color:var(--gray); font-size:.9rem; margin-top:.25rem; }
+    .compare-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:1rem; margin-top:1rem; }
+    .compare-card { padding:1rem; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02); min-height:160px; }
+    .compare-card h4 { font-family:'Bebas Neue',sans-serif; font-size:1.05rem; color:var(--white); margin-bottom:.75rem; }
+    .compare-card p { color:var(--gray); line-height:1.6; font-size:.88rem; }
+    .compare-price { margin-top:1rem; color:var(--gold-lt); font-weight:700; font-size:.95rem; }
     #costos { background:var(--black); }
     .prov-box { background:rgba(26,120,194,.08); border:1px solid rgba(59,163,245,.2); padding:1.3rem 1.7rem; margin-bottom:2rem; display:flex; gap:2rem; align-items:center; flex-wrap:wrap; }
     .prov-box strong { font-family:'Barlow Condensed',sans-serif; font-size:.74rem; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--blue-lt); display:block; margin-bottom:.25rem; }

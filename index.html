@@ -349,5 +349,60 @@
   </div>
 </footer>
 
+<script>
+  const productsSection = document.getElementById('productos');
+  const compareBtn = document.getElementById('compare-btn');
+  const cartCount = document.querySelector('.cart-count');
+  const comparePanel = document.getElementById('compare-panel');
+  const compareGrid = comparePanel.querySelector('.compare-grid');
+
+  const productCards = Array.from(productsSection.querySelectorAll('.product-card'));
+
+  function formatProduct(card) {
+    const title = card.querySelector('h3')?.textContent.trim() || '';
+    const price = card.querySelector('.price-val')?.textContent.trim() || '';
+    const description = card.querySelector('.product-body > p')?.textContent.trim() || '';
+    return { card, title, price, description };
+  }
+
+  function updateCart() {
+    const selected = Array.from(productsSection.querySelectorAll('.product-checkbox:checked'));
+    cartCount.textContent = selected.length;
+    compareBtn.disabled = selected.length < 2;
+    if (selected.length === 0) {
+      comparePanel.hidden = true;
+    }
+  }
+
+  function renderCompare(selectedCards) {
+    comparePanel.hidden = false;
+    compareGrid.innerHTML = selectedCards.map(({ title, price, description }) => `
+      <div class="compare-card">
+        <h4>${title}</h4>
+        <p>${description}</p>
+        <div class="compare-price">Precio: ${price}</div>
+      </div>
+    `).join('');
+  }
+
+  productCards.forEach((card, index) => {
+    const label = document.createElement('label');
+    label.className = 'product-select';
+    label.innerHTML = `
+      <input type="checkbox" class="product-checkbox" data-product-index="${index}" />
+      Seleccionar
+    `;
+    card.querySelector('.product-body').appendChild(label);
+    label.querySelector('.product-checkbox').addEventListener('change', updateCart);
+  });
+
+  compareBtn.addEventListener('click', () => {
+    const selectedCheckboxes = Array.from(productsSection.querySelectorAll('.product-checkbox:checked'));
+    const selected = selectedCheckboxes.map(cb => formatProduct(cb.closest('.product-card')));
+    renderCompare(selected);
+    comparePanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>
+
 </body>
 </html>
